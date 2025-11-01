@@ -26,6 +26,22 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(consol_handler)
 
+def param_load(params_path: str)->dict:
+    try:
+        with open(params_path, 'r') as file:
+            params = yaml.safe_load(params_path)
+            logger.debug("Parameters are load from %s", params_path)
+
+    except FileNotFoundError:
+        logger.debug("File not found %s", params_path)  
+        raise
+    except yaml.YAMLError as e:
+        logger.debug(f"YAML error!{e}")
+        raise
+    except Exception as e:
+        logger.debug("Unexpected error %s", e)
+        raise
+
 def load_data(file_path: str) -> pd.DataFrame:
     """Load data from a CSV file."""
     try:
@@ -77,8 +93,8 @@ def save_data(df: pd.DataFrame, file_path: str) -> None:
 
 def main():
     try:
-        #params = load_params(params_path='params.yaml')
-       # max_features = params['feature_engineering']['max_features']
+        #params = param_load(params_path='params.yaml')
+        #max_features = params['feature_engineering']['max_features']
         max_features = 50
 
         train_data = load_data('../data/interim/train_processed.csv')
